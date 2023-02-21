@@ -2,7 +2,6 @@ import { BindingCount } from '../bindings/binding_count';
 import * as ERROR_MSGS from '../constants/error_msgs';
 import { BindingTypeEnum, TargetTypeEnum } from '../constants/literal_types';
 import * as METADATA_KEY from '../constants/metadata_keys';
-import { interfaces } from '../interfaces/interfaces';
 import { isStackOverflowExeption } from '../utils/exceptions';
 import { circularDependencyToException, getServiceIdentifierAsString, listMetadataForTarget, listRegisteredBindingsForServiceIdentifier } from '../utils/serialization';
 import { Context } from './context';
@@ -11,9 +10,13 @@ import { Plan } from './plan';
 import { getBaseClassDependencyCount, getDependencies, getFunctionName } from './reflection_utils';
 import { Request } from './request';
 import { Target } from './target';
+import type {Container} from "../container/container";
+import type {Binding} from "../bindings/binding";
+import {interfaces} from "../../lib/interfaces/interfaces";
+import type {Lookup} from "../container/lookup";
 
-function getBindingDictionary(cntnr: interfaces.Container): interfaces.Lookup<interfaces.Binding<unknown>> {
-  return (cntnr as unknown as { _bindingDictionary: interfaces.Lookup<interfaces.Binding<unknown>> })._bindingDictionary;
+function getBindingDictionary(cntnr: Container): Lookup<Binding<unknown>> {
+  return (cntnr as unknown as { _bindingDictionary: Lookup<Binding<unknown>> })._bindingDictionary;
 }
 
 function _createTarget(
@@ -23,7 +26,7 @@ function _createTarget(
   name: string,
   key?: string | number | symbol,
   value?: unknown
-): interfaces.Target {
+): Target {
 
   const metadataKey = isMultiInject ? METADATA_KEY.MULTI_INJECT_TAG : METADATA_KEY.INJECT_TAG;
   const injectMetadata = new Metadata(metadataKey, serviceIdentifier);
@@ -41,10 +44,10 @@ function _createTarget(
 function _getActiveBindings(
   metadataReader: interfaces.MetadataReader,
   avoidConstraints: boolean,
-  context: interfaces.Context,
-  parentRequest: interfaces.Request | null,
-  target: interfaces.Target
-): interfaces.Binding<unknown>[] {
+  context: Context,
+  parentRequest: Request | null,
+  target: Target
+): Binding<unknown>[] {
 
   let bindings = getBindings(context.container, target.serviceIdentifier);
   let activeBindings: interfaces.Binding<unknown>[] = [];
@@ -92,7 +95,7 @@ function _validateActiveBindingCount(
   serviceIdentifier: interfaces.ServiceIdentifier,
   bindings: interfaces.Binding<unknown>[],
   target: interfaces.Target,
-  container: interfaces.Container
+  container: Container
 ): interfaces.Binding<unknown>[] {
 
   switch (bindings.length) {
@@ -128,13 +131,13 @@ function _createSubRequests(
   metadataReader: interfaces.MetadataReader,
   avoidConstraints: boolean,
   serviceIdentifier: interfaces.ServiceIdentifier,
-  context: interfaces.Context,
-  parentRequest: interfaces.Request | null,
-  target: interfaces.Target
+  context: Context,
+  parentRequest: Request | null,
+  target: Target
 ) {
 
   let activeBindings: interfaces.Binding<unknown>[];
-  let childRequest: interfaces.Request;
+  let childRequest: Request;
 
   if (parentRequest === null) {
 
@@ -196,7 +199,7 @@ function _createSubRequests(
 }
 
 function getBindings<T>(
-  container: interfaces.Container,
+  container: Container,
   serviceIdentifier: interfaces.ServiceIdentifier<T>
 ): interfaces.Binding<T>[] {
 
@@ -219,14 +222,14 @@ function getBindings<T>(
 
 function plan(
   metadataReader: interfaces.MetadataReader,
-  container: interfaces.Container,
+  container: Container,
   isMultiInject: boolean,
   targetType: interfaces.TargetType,
   serviceIdentifier: interfaces.ServiceIdentifier,
   key?: string | number | symbol,
   value?: unknown,
   avoidConstraints = false
-): interfaces.Context {
+): Context {
 
   const context = new Context(container);
   const target = _createTarget(isMultiInject, targetType, serviceIdentifier, '', key, value);
@@ -246,15 +249,16 @@ function plan(
 }
 
 function createMockRequest(
-  container: interfaces.Container,
+  container: Container,
   serviceIdentifier: interfaces.ServiceIdentifier,
   key: string | number | symbol,
   value: unknown
-): interfaces.Request {
+): Request {
 
   const target = new Target(TargetTypeEnum.Variable, '', serviceIdentifier, new Metadata(key, value));
   const context = new Context(container);
   const request = new Request(serviceIdentifier, context, null, [], target);
+
   return request;
 }
 

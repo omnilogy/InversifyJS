@@ -1,21 +1,23 @@
 import { interfaces } from '../interfaces/interfaces';
 import { id } from '../utils/id';
+import type {Context} from "./context";
+import type {Target} from "./target";
 
-class Request implements interfaces.Request {
+class Request {
 
   public id: number;
   public serviceIdentifier: interfaces.ServiceIdentifier;
-  public parentContext: interfaces.Context;
-  public parentRequest: interfaces.Request | null;
+  public parentContext: Context;
+  public parentRequest: Request | null;
   public bindings: interfaces.Binding<unknown>[];
-  public childRequests: interfaces.Request[];
+  public childRequests: Request[];
   public target: interfaces.Target;
   public requestScope: interfaces.RequestScope | null;
 
   public constructor(
     serviceIdentifier: interfaces.ServiceIdentifier,
-    parentContext: interfaces.Context,
-    parentRequest: interfaces.Request | null,
+    parentContext: Context,
+    parentRequest: Request | null,
     bindings: (interfaces.Binding<any> | interfaces.Binding<any>[]),
     target: interfaces.Target
   ) {
@@ -36,8 +38,8 @@ class Request implements interfaces.Request {
   public addChildRequest(
     serviceIdentifier: interfaces.ServiceIdentifier,
     bindings: (interfaces.Binding<unknown> | interfaces.Binding<unknown>[]),
-    target: interfaces.Target
-  ): interfaces.Request {
+    target: Target
+  ): Request {
 
     const child = new Request(
       serviceIdentifier,

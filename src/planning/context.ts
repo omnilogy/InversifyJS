@@ -1,27 +1,26 @@
-import { interfaces } from '../interfaces/interfaces';
 import { id } from '../utils/id';
+import type {Container} from "../container/container";
+import type {Plan} from "./plan";
 
-class Context implements interfaces.Context {
+export class Context  {
 
   public id: number;
-  public container: interfaces.Container;
-  public plan!: interfaces.Plan;
-  public currentRequest!: interfaces.Request;
+  public container: Container;
+  public plan!: Plan;
+  public currentRequest!: Request;
 
   public constructor(
-    container: interfaces.Container) {
+    container: Container) {
     this.id = id();
     this.container = container;
   }
 
-  public addPlan(plan: interfaces.Plan) {
+  public addPlan(plan: Plan) {
     this.plan = plan;
   }
 
-  public setCurrentRequest(currentRequest: interfaces.Request) {
+  public setCurrentRequest(currentRequest: Request) {
     this.currentRequest = currentRequest;
   }
 
 }
-
-export { Context };

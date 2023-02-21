@@ -1,11 +1,11 @@
-import { interfaces } from '../interfaces/interfaces';
+import type {Context} from "./context";
 
-class Plan implements interfaces.Plan {
+class Plan {
 
-  public parentContext: interfaces.Context;
-  public rootRequest: interfaces.Request;
+  public parentContext: Context;
+  public rootRequest: Request;
 
-  public constructor(parentContext: interfaces.Context, rootRequest: interfaces.Request) {
+  public constructor(parentContext: Context, rootRequest: Request) {
     this.parentContext = parentContext;
     this.rootRequest = rootRequest;
   }

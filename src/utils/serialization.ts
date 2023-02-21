@@ -1,5 +1,8 @@
 import * as ERROR_MSGS from '../constants/error_msgs';
 import { interfaces } from '../interfaces/interfaces';
+import type {Container} from "../container/container";
+
+import type { Request } from '../planning/request';
 
 function getServiceIdentifierAsString(serviceIdentifier: interfaces.ServiceIdentifier): string {
   if (typeof serviceIdentifier === 'function') {
@@ -14,10 +17,10 @@ function getServiceIdentifierAsString(serviceIdentifier: interfaces.ServiceIdent
 }
 
 function listRegisteredBindingsForServiceIdentifier(
-  container: interfaces.Container,
+  container: Container,
   serviceIdentifier: string,
   getBindings: <T>(
-    container: interfaces.Container,
+    container: Container,
     serviceIdentifier: interfaces.ServiceIdentifier<T>
   ) => interfaces.Binding<T>[]
 ): string {
@@ -87,7 +90,7 @@ function dependencyChainToString(
 }
 
 function circularDependencyToException(
-  request: interfaces.Request
+  request: Request
 ) {
   request.childRequests.forEach((childRequest) => {
     if (alreadyDependencyChain(childRequest, childRequest.serviceIdentifier)) {

@@ -4,60 +4,59 @@ import { BindingScopeEnum, TargetTypeEnum } from '../constants/literal_types';
 import * as METADATA_KEY from '../constants/metadata_keys';
 import { interfaces } from '../interfaces/interfaces';
 import { MetadataReader } from '../planning/metadata_reader';
-import { createMockRequest, getBindingDictionary, plan } from '../planning/planner';
+import { plan } from '../planning/planner';
 import { resolve } from '../resolution/resolver';
 import { BindingToSyntax } from '../syntax/binding_to_syntax';
 import { isPromise, isPromiseOrContainsPromise } from '../utils/async';
 import { id } from '../utils/id';
 import { getServiceIdentifierAsString } from '../utils/serialization';
-import { ContainerSnapshot } from './container_snapshot';
 import { Lookup } from './lookup';
 import { ModuleActivationStore } from './module_activation_store';
 
 type GetArgs<T> = Omit<interfaces.NextArgs<T>, 'contextInterceptor' | 'targetType'>
 
-class Container implements interfaces.Container {
+class Container {
 
   public id: number;
-  public parent: interfaces.Container | null;
+  public parent: Container | null;
   public readonly options: interfaces.ContainerOptions;
   private _middleware: interfaces.Next | null;
   private _bindingDictionary: interfaces.Lookup<interfaces.Binding<unknown>>;
   private _activations: interfaces.Lookup<interfaces.BindingActivation<unknown>>;
   private _deactivations: interfaces.Lookup<interfaces.BindingDeactivation<unknown>>;
-  private _snapshots: interfaces.ContainerSnapshot[];
+  // private _snapshots: interfaces.ContainerSnapshot[];
   private _metadataReader: interfaces.MetadataReader;
   private _moduleActivationStore: interfaces.ModuleActivationStore
 
-  public static merge(
-    container1: interfaces.Container,
-    container2: interfaces.Container,
-    ...containers: interfaces.Container[]
-  ): interfaces.Container {
-    const container = new Container();
-    const targetContainers: interfaces.Lookup<interfaces.Binding<unknown>>[] = [container1, container2, ...containers]
-      .map((targetContainer) => getBindingDictionary(targetContainer));
-    const bindingDictionary: interfaces.Lookup<interfaces.Binding<unknown>> = getBindingDictionary(container);
-
-    function copyDictionary(
-      origin: interfaces.Lookup<interfaces.Binding<unknown>>,
-      destination: interfaces.Lookup<interfaces.Binding<unknown>>
-    ) {
-
-      origin.traverse((_key, value) => {
-        value.forEach((binding) => {
-          destination.add(binding.serviceIdentifier, binding.clone());
-        });
-      });
-
-    }
-
-    targetContainers.forEach((targetBindingDictionary) => {
-      copyDictionary(targetBindingDictionary, bindingDictionary);
-    });
-
-    return container;
-  }
+  // public static merge(
+  //   container1: interfaces.Container,
+  //   container2: interfaces.Container,
+  //   ...containers: interfaces.Container[]
+  // ) {
+  //   const container = new Container();
+  //   const targetContainers: interfaces.Lookup<interfaces.Binding<unknown>>[] = [container1, container2, ...containers]
+  //     .map((targetContainer) => getBindingDictionary(targetContainer));
+  //   const bindingDictionary: interfaces.Lookup<interfaces.Binding<unknown>> = getBindingDictionary(container);
+  //
+  //   function copyDictionary(
+  //     origin: interfaces.Lookup<interfaces.Binding<unknown>>,
+  //     destination: interfaces.Lookup<interfaces.Binding<unknown>>
+  //   ) {
+  //
+  //     origin.traverse((_key, value) => {
+  //       value.forEach((binding) => {
+  //         destination.add(binding.serviceIdentifier, binding.clone());
+  //       });
+  //     });
+  //
+  //   }
+  //
+  //   targetContainers.forEach((targetBindingDictionary) => {
+  //     copyDictionary(targetBindingDictionary, bindingDictionary);
+  //   });
+  //
+  //   return container;
+  // }
 
   public constructor(containerOptions?: interfaces.ContainerOptions) {
     const options = containerOptions || {};
@@ -99,7 +98,7 @@ class Container implements interfaces.Container {
 
     this.id = id();
     this._bindingDictionary = new Lookup<interfaces.Binding<unknown>>();
-    this._snapshots = [];
+    // this._snapshots = [];
     this._middleware = null;
     this._activations = new Lookup<interfaces.BindingActivation<unknown>>();
     this._deactivations = new Lookup<interfaces.BindingDeactivation<unknown>>();
@@ -108,69 +107,69 @@ class Container implements interfaces.Container {
     this._moduleActivationStore = new ModuleActivationStore()
   }
 
-  public load(...modules: interfaces.ContainerModule[]) {
+  // public load(...modules: interfaces.ContainerModule[]) {
+  //
+  //   const getHelpers = this._getContainerModuleHelpersFactory();
+  //
+  //   for (const currentModule of modules) {
+  //
+  //     const containerModuleHelpers = getHelpers(currentModule.id);
+  //
+  //     currentModule.registry(
+  //       containerModuleHelpers.bindFunction as interfaces.Bind,
+  //       containerModuleHelpers.unbindFunction,
+  //       containerModuleHelpers.isboundFunction,
+  //       containerModuleHelpers.rebindFunction as interfaces.Rebind,
+  //       containerModuleHelpers.unbindAsyncFunction,
+  //       containerModuleHelpers.onActivationFunction as interfaces.Container['onActivation'],
+  //       containerModuleHelpers.onDeactivationFunction as interfaces.Container['onDeactivation']
+  //     );
+  //
+  //   }
+  //
+  // }
 
-    const getHelpers = this._getContainerModuleHelpersFactory();
+  // public async loadAsync(...modules: interfaces.AsyncContainerModule[]) {
+  //
+  //   const getHelpers = this._getContainerModuleHelpersFactory();
+  //
+  //   for (const currentModule of modules) {
+  //
+  //     const containerModuleHelpers = getHelpers(currentModule.id);
+  //
+  //     await currentModule.registry(
+  //       containerModuleHelpers.bindFunction as interfaces.Bind,
+  //       containerModuleHelpers.unbindFunction,
+  //       containerModuleHelpers.isboundFunction,
+  //       containerModuleHelpers.rebindFunction as interfaces.Rebind,
+  //       containerModuleHelpers.unbindAsyncFunction,
+  //       containerModuleHelpers.onActivationFunction as interfaces.Container['onActivation'],
+  //       containerModuleHelpers.onDeactivationFunction as interfaces.Container['onDeactivation']
+  //     );
+  //
+  //   }
+  //
+  // }
 
-    for (const currentModule of modules) {
+  // public unload(...modules: interfaces.ContainerModuleBase[]): void {
+  //   modules.forEach((module) => {
+  //     const deactivations = this._removeModuleBindings(module.id)
+  //     this._deactivateSingletons(deactivations);
+  //
+  //     this._removeModuleHandlers(module.id);
+  //   });
+  //
+  // }
 
-      const containerModuleHelpers = getHelpers(currentModule.id);
-
-      currentModule.registry(
-        containerModuleHelpers.bindFunction as interfaces.Bind,
-        containerModuleHelpers.unbindFunction,
-        containerModuleHelpers.isboundFunction,
-        containerModuleHelpers.rebindFunction as interfaces.Rebind,
-        containerModuleHelpers.unbindAsyncFunction,
-        containerModuleHelpers.onActivationFunction as interfaces.Container['onActivation'],
-        containerModuleHelpers.onDeactivationFunction as interfaces.Container['onDeactivation']
-      );
-
-    }
-
-  }
-
-  public async loadAsync(...modules: interfaces.AsyncContainerModule[]) {
-
-    const getHelpers = this._getContainerModuleHelpersFactory();
-
-    for (const currentModule of modules) {
-
-      const containerModuleHelpers = getHelpers(currentModule.id);
-
-      await currentModule.registry(
-        containerModuleHelpers.bindFunction as interfaces.Bind,
-        containerModuleHelpers.unbindFunction,
-        containerModuleHelpers.isboundFunction,
-        containerModuleHelpers.rebindFunction as interfaces.Rebind,
-        containerModuleHelpers.unbindAsyncFunction,
-        containerModuleHelpers.onActivationFunction as interfaces.Container['onActivation'],
-        containerModuleHelpers.onDeactivationFunction as interfaces.Container['onDeactivation']
-      );
-
-    }
-
-  }
-
-  public unload(...modules: interfaces.ContainerModuleBase[]): void {
-    modules.forEach((module) => {
-      const deactivations = this._removeModuleBindings(module.id)
-      this._deactivateSingletons(deactivations);
-
-      this._removeModuleHandlers(module.id);
-    });
-
-  }
-
-  public async unloadAsync(...modules: interfaces.ContainerModuleBase[]): Promise<void> {
-    for (const module of modules) {
-      const deactivations = this._removeModuleBindings(module.id)
-      await this._deactivateSingletonsAsync(deactivations)
-
-      this._removeModuleHandlers(module.id);
-    }
-
-  }
+  // public async unloadAsync(...modules: interfaces.ContainerModuleBase[]): Promise<void> {
+  //   for (const module of modules) {
+  //     const deactivations = this._removeModuleBindings(module.id)
+  //     await this._deactivateSingletonsAsync(deactivations)
+  //
+  //     this._removeModuleHandlers(module.id);
+  //   }
+  //
+  // }
 
   // Registers a type binding
   public bind<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>): interfaces.BindingToSyntax<T> {
@@ -180,15 +179,15 @@ class Container implements interfaces.Container {
     return new BindingToSyntax<T>(binding);
   }
 
-  public rebind<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>): interfaces.BindingToSyntax<T> {
-    this.unbind(serviceIdentifier);
-    return this.bind(serviceIdentifier);
-  }
-
-  public async rebindAsync<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>): Promise<interfaces.BindingToSyntax<T>> {
-    await this.unbindAsync(serviceIdentifier);
-    return this.bind(serviceIdentifier);
-  }
+  // public rebind<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>): interfaces.BindingToSyntax<T> {
+  //   this.unbind(serviceIdentifier);
+  //   return this.bind(serviceIdentifier);
+  // }
+  //
+  // public async rebindAsync<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>): Promise<interfaces.BindingToSyntax<T>> {
+  //   await this.unbindAsync(serviceIdentifier);
+  //   return this.bind(serviceIdentifier);
+  // }
 
   // Removes a type binding from the registry by its key
   public unbind(serviceIdentifier: interfaces.ServiceIdentifier): void {
@@ -201,44 +200,44 @@ class Container implements interfaces.Container {
     this._removeServiceFromDictionary(serviceIdentifier);
   }
 
-  public async unbindAsync(serviceIdentifier: interfaces.ServiceIdentifier): Promise<void> {
-    if (this._bindingDictionary.hasKey(serviceIdentifier)) {
-      const bindings = this._bindingDictionary.get(serviceIdentifier);
-
-      await this._deactivateSingletonsAsync(bindings);
-    }
-
-    this._removeServiceFromDictionary(serviceIdentifier);
-  }
+  // public async unbindAsync(serviceIdentifier: interfaces.ServiceIdentifier): Promise<void> {
+  //   if (this._bindingDictionary.hasKey(serviceIdentifier)) {
+  //     const bindings = this._bindingDictionary.get(serviceIdentifier);
+  //
+  //     await this._deactivateSingletonsAsync(bindings);
+  //   }
+  //
+  //   this._removeServiceFromDictionary(serviceIdentifier);
+  // }
 
   // Removes all the type bindings from the registry
-  public unbindAll(): void {
-    this._bindingDictionary.traverse((_key, value) => {
-      this._deactivateSingletons(value);
-    });
+  // public unbindAll(): void {
+  //   this._bindingDictionary.traverse((_key, value) => {
+  //     this._deactivateSingletons(value);
+  //   });
+  //
+  //   this._bindingDictionary = new Lookup<Binding<unknown>>();
+  // }
 
-    this._bindingDictionary = new Lookup<Binding<unknown>>();
-  }
-
-  public async unbindAllAsync(): Promise<void> {
-    const promises: Promise<void>[] = [];
-
-    this._bindingDictionary.traverse((_key, value) => {
-      promises.push(this._deactivateSingletonsAsync(value));
-    });
-
-    await Promise.all(promises);
-
-    this._bindingDictionary = new Lookup<Binding<unknown>>();
-  }
+  // public async unbindAllAsync(): Promise<void> {
+  //   const promises: Promise<void>[] = [];
+  //
+  //   this._bindingDictionary.traverse((_key, value) => {
+  //     promises.push(this._deactivateSingletonsAsync(value));
+  //   });
+  //
+  //   await Promise.all(promises);
+  //
+  //   this._bindingDictionary = new Lookup<Binding<unknown>>();
+  // }
 
   public onActivation<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>, onActivation: interfaces.BindingActivation<T>) {
     this._activations.add(serviceIdentifier, onActivation as interfaces.BindingActivation<unknown>);
   }
 
-  public onDeactivation<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>, onDeactivation: interfaces.BindingDeactivation<T>) {
-    this._deactivations.add(serviceIdentifier, onDeactivation as interfaces.BindingDeactivation<unknown>);
-  }
+  // public onDeactivation<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>, onDeactivation: interfaces.BindingDeactivation<T>) {
+  //   this._deactivations.add(serviceIdentifier, onDeactivation as interfaces.BindingDeactivation<unknown>);
+  // }
 
   // Allows to check if there are bindings available for serviceIdentifier
   public isBound(serviceIdentifier: interfaces.ServiceIdentifier<unknown>): boolean {
@@ -250,71 +249,71 @@ class Container implements interfaces.Container {
   }
 
   // check binding dependency only in current container
-  public isCurrentBound<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>): boolean {
-    return this._bindingDictionary.hasKey(serviceIdentifier);
-  }
+  // public isCurrentBound<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>): boolean {
+  //   return this._bindingDictionary.hasKey(serviceIdentifier);
+  // }
 
-  public isBoundNamed(serviceIdentifier: interfaces.ServiceIdentifier, named: string | number | symbol): boolean {
-    return this.isBoundTagged(serviceIdentifier, METADATA_KEY.NAMED_TAG, named);
-  }
+  // public isBoundNamed(serviceIdentifier: interfaces.ServiceIdentifier, named: string | number | symbol): boolean {
+  //   return this.isBoundTagged(serviceIdentifier, METADATA_KEY.NAMED_TAG, named);
+  // }
 
   // Check if a binding with a complex constraint is available without throwing a error. Ancestors are also verified.
-  public isBoundTagged(serviceIdentifier: interfaces.ServiceIdentifier, key: string | number | symbol, value: unknown): boolean {
-    let bound = false;
+  // public isBoundTagged(serviceIdentifier: interfaces.ServiceIdentifier, key: string | number | symbol, value: unknown): boolean {
+  //   let bound = false;
+  //
+  //   // verify if there are bindings available for serviceIdentifier on current binding dictionary
+  //   if (this._bindingDictionary.hasKey(serviceIdentifier)) {
+  //     const bindings = this._bindingDictionary.get(serviceIdentifier);
+  //     const request = createMockRequest(this, serviceIdentifier, key, value);
+  //     bound = bindings.some((b) => b.constraint(request));
+  //   }
+  //
+  //   // verify if there is a parent container that could solve the request
+  //   if (!bound && this.parent) {
+  //     bound = this.parent.isBoundTagged(serviceIdentifier, key, value);
+  //   }
+  //
+  //   return bound;
+  // }
 
-    // verify if there are bindings available for serviceIdentifier on current binding dictionary
-    if (this._bindingDictionary.hasKey(serviceIdentifier)) {
-      const bindings = this._bindingDictionary.get(serviceIdentifier);
-      const request = createMockRequest(this, serviceIdentifier, key, value);
-      bound = bindings.some((b) => b.constraint(request));
-    }
+  // public snapshot(): void {
+  //   this._snapshots.push(ContainerSnapshot.of(
+  //     this._bindingDictionary.clone(),
+  //     this._middleware,
+  //     this._activations.clone(),
+  //     this._deactivations.clone(),
+  //     this._moduleActivationStore.clone()
+  //   ));
+  // }
 
-    // verify if there is a parent container that could solve the request
-    if (!bound && this.parent) {
-      bound = this.parent.isBoundTagged(serviceIdentifier, key, value);
-    }
+  // public restore(): void {
+  //   const snapshot = this._snapshots.pop();
+  //   if (snapshot === undefined) {
+  //     throw new Error(ERROR_MSGS.NO_MORE_SNAPSHOTS_AVAILABLE);
+  //   }
+  //   this._bindingDictionary = snapshot.bindings;
+  //   this._activations = snapshot.activations;
+  //   this._deactivations = snapshot.deactivations;
+  //   this._middleware = snapshot.middleware;
+  //   this._moduleActivationStore = snapshot.moduleActivationStore
+  // }
 
-    return bound;
-  }
+  // public createChild(containerOptions?: interfaces.ContainerOptions): Container {
+  //   const child = new Container(containerOptions || this.options);
+  //   child.parent = this;
+  //   return child;
+  // }
 
-  public snapshot(): void {
-    this._snapshots.push(ContainerSnapshot.of(
-      this._bindingDictionary.clone(),
-      this._middleware,
-      this._activations.clone(),
-      this._deactivations.clone(),
-      this._moduleActivationStore.clone()
-    ));
-  }
+  // public applyMiddleware(...middlewares: interfaces.Middleware[]): void {
+  //   const initial: interfaces.Next = (this._middleware) ? this._middleware : this._planAndResolve();
+  //   this._middleware = middlewares.reduce(
+  //     (prev, curr) => curr(prev),
+  //     initial);
+  // }
 
-  public restore(): void {
-    const snapshot = this._snapshots.pop();
-    if (snapshot === undefined) {
-      throw new Error(ERROR_MSGS.NO_MORE_SNAPSHOTS_AVAILABLE);
-    }
-    this._bindingDictionary = snapshot.bindings;
-    this._activations = snapshot.activations;
-    this._deactivations = snapshot.deactivations;
-    this._middleware = snapshot.middleware;
-    this._moduleActivationStore = snapshot.moduleActivationStore
-  }
-
-  public createChild(containerOptions?: interfaces.ContainerOptions): Container {
-    const child = new Container(containerOptions || this.options);
-    child.parent = this;
-    return child;
-  }
-
-  public applyMiddleware(...middlewares: interfaces.Middleware[]): void {
-    const initial: interfaces.Next = (this._middleware) ? this._middleware : this._planAndResolve();
-    this._middleware = middlewares.reduce(
-      (prev, curr) => curr(prev),
-      initial);
-  }
-
-  public applyCustomMetadataReader(metadataReader: interfaces.MetadataReader) {
-    this._metadataReader = metadataReader;
-  }
+  // public applyCustomMetadataReader(metadataReader: interfaces.MetadataReader) {
+  //   this._metadataReader = metadataReader;
+  // }
 
   // Resolves a dependency by its runtime identifier
   // The runtime identifier must be associated with only one binding
@@ -325,11 +324,11 @@ class Container implements interfaces.Container {
     return this._getButThrowIfAsync<T>(getArgs) as T;
   }
 
-  public async getAsync<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>): Promise<T> {
-    const getArgs = this._getNotAllArgs(serviceIdentifier, false);
-
-    return this._get<T>(getArgs) as Promise<T> | T;
-  }
+  // public async getAsync<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>): Promise<T> {
+  //   const getArgs = this._getNotAllArgs(serviceIdentifier, false);
+  //
+  //   return this._get<T>(getArgs) as Promise<T> | T;
+  // }
 
   public getTagged<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>, key: string | number | symbol, value: unknown): T {
     const getArgs = this._getNotAllArgs(serviceIdentifier, false, key, value);
@@ -363,35 +362,35 @@ class Container implements interfaces.Container {
     return this._getButThrowIfAsync<T>(getArgs) as T[];
   }
 
-  public getAllAsync<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>): Promise<T[]> {
-    const getArgs = this._getAllArgs(serviceIdentifier);
+  // public getAllAsync<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>): Promise<T[]> {
+  //   const getArgs = this._getAllArgs(serviceIdentifier);
+  //
+  //   return this._getAll(getArgs);
+  // }
 
-    return this._getAll(getArgs);
-  }
+  // public getAllTagged<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>, key: string | number | symbol, value: unknown): T[] {
+  //   const getArgs = this._getNotAllArgs(serviceIdentifier, true, key, value);
+  //
+  //   return this._getButThrowIfAsync<T>(getArgs) as T[];
+  // }
 
-  public getAllTagged<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>, key: string | number | symbol, value: unknown): T[] {
-    const getArgs = this._getNotAllArgs(serviceIdentifier, true, key, value);
+  // public getAllTaggedAsync<T>(
+  //   serviceIdentifier: interfaces.ServiceIdentifier<T>,
+  //   key: string | number | symbol,
+  //   value: unknown
+  // ): Promise<T[]> {
+  //   const getArgs = this._getNotAllArgs(serviceIdentifier, true, key, value);
+  //
+  //   return this._getAll(getArgs);
+  // }
 
-    return this._getButThrowIfAsync<T>(getArgs) as T[];
-  }
+  // public getAllNamed<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>, named: string | number | symbol): T[] {
+  //   return this.getAllTagged<T>(serviceIdentifier, METADATA_KEY.NAMED_TAG, named);
+  // }
 
-  public getAllTaggedAsync<T>(
-    serviceIdentifier: interfaces.ServiceIdentifier<T>,
-    key: string | number | symbol,
-    value: unknown
-  ): Promise<T[]> {
-    const getArgs = this._getNotAllArgs(serviceIdentifier, true, key, value);
-
-    return this._getAll(getArgs);
-  }
-
-  public getAllNamed<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>, named: string | number | symbol): T[] {
-    return this.getAllTagged<T>(serviceIdentifier, METADATA_KEY.NAMED_TAG, named);
-  }
-
-  public getAllNamedAsync<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>, named: string | number | symbol): Promise<T[]> {
-    return this.getAllTaggedAsync<T>(serviceIdentifier, METADATA_KEY.NAMED_TAG, named);
-  }
+  // public getAllNamedAsync<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>, named: string | number | symbol): Promise<T[]> {
+  //   return this.getAllTaggedAsync<T>(serviceIdentifier, METADATA_KEY.NAMED_TAG, named);
+  // }
 
   public resolve<T>(constructorFunction: interfaces.Newable<T>) {
     const isBound = this.isBound(constructorFunction);
@@ -411,16 +410,16 @@ class Container implements interfaces.Container {
       return (instance as interfaces.Instance<T>)[(data.value as string)]?.();
     }
   }
-  private _removeModuleHandlers(moduleId: number): void {
-    const moduleActivationsHandlers = this._moduleActivationStore.remove(moduleId);
+  // private _removeModuleHandlers(moduleId: number): void {
+  //   const moduleActivationsHandlers = this._moduleActivationStore.remove(moduleId);
+  //
+  //   this._activations.removeIntersection(moduleActivationsHandlers.onActivations);
+  //   this._deactivations.removeIntersection(moduleActivationsHandlers.onDeactivations);
+  // }
 
-    this._activations.removeIntersection(moduleActivationsHandlers.onActivations);
-    this._deactivations.removeIntersection(moduleActivationsHandlers.onDeactivations);
-  }
-
-  private _removeModuleBindings(moduleId: number): interfaces.Binding<unknown>[] {
-    return this._bindingDictionary.removeByCondition(binding => binding.moduleId === moduleId);
-  }
+  // private _removeModuleBindings(moduleId: number): interfaces.Binding<unknown>[] {
+  //   return this._bindingDictionary.removeByCondition(binding => binding.moduleId === moduleId);
+  // }
 
   private _deactivate<T>(binding: Binding<T>, instance: T): void | Promise<void> {
     const constructor: NewableFunction = Object.getPrototypeOf(instance).constructor;
@@ -496,70 +495,70 @@ class Container implements interfaces.Container {
     }
   }
 
-  private _getContainerModuleHelpersFactory() {
-
-    const setModuleId = (bindingToSyntax: interfaces.BindingToSyntax<unknown>, moduleId: interfaces.ContainerModuleBase['id']) => {
-      // TODO: Implement an internal type `_BindingToSyntax<T>` wherein this member
-      // can be public. Let `BindingToSyntax<T>` be the presentational type that
-      // depends on it, and does not expose this member as public.
-      (bindingToSyntax as unknown as { _binding: { moduleId: interfaces.ContainerModuleBase['id'] } } )._binding.moduleId = moduleId;
-    };
-
-    const getBindFunction = <T>(moduleId: interfaces.ContainerModuleBase['id']) =>
-      (serviceIdentifier: interfaces.ServiceIdentifier) => {
-        const bindingToSyntax = this.bind(serviceIdentifier);
-        setModuleId(bindingToSyntax, moduleId);
-        return bindingToSyntax as BindingToSyntax<T>;
-      };
-
-    const getUnbindFunction = () =>
-      (serviceIdentifier: interfaces.ServiceIdentifier) => {
-        return this.unbind(serviceIdentifier);
-      };
-
-    const getUnbindAsyncFunction = () =>
-      (serviceIdentifier: interfaces.ServiceIdentifier) => {
-        return this.unbindAsync(serviceIdentifier);
-      };
-
-    const getIsboundFunction = () =>
-      (serviceIdentifier: interfaces.ServiceIdentifier) => {
-        return this.isBound(serviceIdentifier)
-      };
-
-    const getRebindFunction = <T = unknown>(moduleId: interfaces.ContainerModuleBase['id']) =>
-      (serviceIdentifier: interfaces.ServiceIdentifier) => {
-        const bindingToSyntax = this.rebind(serviceIdentifier);
-        setModuleId(bindingToSyntax, moduleId);
-        return bindingToSyntax as BindingToSyntax<T>;
-      };
-
-    const getOnActivationFunction = (moduleId: interfaces.ContainerModuleBase['id']) =>
-      (serviceIdentifier: interfaces.ServiceIdentifier, onActivation: interfaces.BindingActivation) => {
-        this._moduleActivationStore.addActivation(moduleId, serviceIdentifier, onActivation);
-        this.onActivation(serviceIdentifier, onActivation);
-      }
-
-    const getOnDeactivationFunction = (moduleId: interfaces.ContainerModuleBase['id']) =>
-      (serviceIdentifier: interfaces.ServiceIdentifier, onDeactivation: interfaces.BindingDeactivation) => {
-        this._moduleActivationStore.addDeactivation(moduleId, serviceIdentifier, onDeactivation);
-        this.onDeactivation(serviceIdentifier, onDeactivation);
-      }
-
-    return (mId: interfaces.ContainerModuleBase['id']) => ({
-      bindFunction: getBindFunction(mId),
-      isboundFunction: getIsboundFunction(),
-      onActivationFunction: getOnActivationFunction(mId),
-      onDeactivationFunction: getOnDeactivationFunction(mId),
-      rebindFunction: getRebindFunction(mId),
-      unbindFunction: getUnbindFunction(),
-      unbindAsyncFunction: getUnbindAsyncFunction()
-    });
-
-  }
-  private _getAll<T>(getArgs: GetArgs<T>): Promise<T[]> {
-    return Promise.all(this._get<T>(getArgs) as (Promise<T> | T)[]);
-  }
+  // private _getContainerModuleHelpersFactory() {
+  //
+  //   const setModuleId = (bindingToSyntax: interfaces.BindingToSyntax<unknown>, moduleId: interfaces.ContainerModuleBase['id']) => {
+  //     // TODO: Implement an internal type `_BindingToSyntax<T>` wherein this member
+  //     // can be public. Let `BindingToSyntax<T>` be the presentational type that
+  //     // depends on it, and does not expose this member as public.
+  //     (bindingToSyntax as unknown as { _binding: { moduleId: interfaces.ContainerModuleBase['id'] } } )._binding.moduleId = moduleId;
+  //   };
+  //
+  //   const getBindFunction = <T>(moduleId: interfaces.ContainerModuleBase['id']) =>
+  //     (serviceIdentifier: interfaces.ServiceIdentifier) => {
+  //       const bindingToSyntax = this.bind(serviceIdentifier);
+  //       setModuleId(bindingToSyntax, moduleId);
+  //       return bindingToSyntax as BindingToSyntax<T>;
+  //     };
+  //
+  //   const getUnbindFunction = () =>
+  //     (serviceIdentifier: interfaces.ServiceIdentifier) => {
+  //       return this.unbind(serviceIdentifier);
+  //     };
+  //
+  //   // const getUnbindAsyncFunction = () =>
+  //   //   (serviceIdentifier: interfaces.ServiceIdentifier) => {
+  //   //     return this.unbindAsync(serviceIdentifier);
+  //   //   };
+  //
+  //   const getIsboundFunction = () =>
+  //     (serviceIdentifier: interfaces.ServiceIdentifier) => {
+  //       return this.isBound(serviceIdentifier)
+  //     };
+  //
+  //   // const getRebindFunction = <T = unknown>(moduleId: interfaces.ContainerModuleBase['id']) =>
+  //   //   (serviceIdentifier: interfaces.ServiceIdentifier) => {
+  //   //     const bindingToSyntax = this.rebind(serviceIdentifier);
+  //   //     setModuleId(bindingToSyntax, moduleId);
+  //   //     return bindingToSyntax as BindingToSyntax<T>;
+  //   //   };
+  //
+  //   const getOnActivationFunction = (moduleId: interfaces.ContainerModuleBase['id']) =>
+  //     (serviceIdentifier: interfaces.ServiceIdentifier, onActivation: interfaces.BindingActivation) => {
+  //       this._moduleActivationStore.addActivation(moduleId, serviceIdentifier, onActivation);
+  //       this.onActivation(serviceIdentifier, onActivation);
+  //     }
+  //
+  //   // const getOnDeactivationFunction = (moduleId: interfaces.ContainerModuleBase['id']) =>
+  //   //   (serviceIdentifier: interfaces.ServiceIdentifier, onDeactivation: interfaces.BindingDeactivation) => {
+  //   //     this._moduleActivationStore.addDeactivation(moduleId, serviceIdentifier, onDeactivation);
+  //   //     this.onDeactivation(serviceIdentifier, onDeactivation);
+  //   //   }
+  //
+  //   return (mId: interfaces.ContainerModuleBase['id']) => ({
+  //     bindFunction: getBindFunction(mId),
+  //     isboundFunction: getIsboundFunction(),
+  //     onActivationFunction: getOnActivationFunction(mId),
+  //     // onDeactivationFunction: getOnDeactivationFunction(mId),
+  //     // rebindFunction: getRebindFunction(mId),
+  //     unbindFunction: getUnbindFunction(),
+  //     // unbindAsyncFunction: getUnbindAsyncFunction()
+  //   });
+  //
+  // }
+  // private _getAll<T>(getArgs: GetArgs<T>): Promise<T[]> {
+  //   return Promise.all(this._get<T>(getArgs) as (Promise<T> | T)[]);
+  // }
   // Prepares arguments required for resolution and
   // delegates resolution to _middleware if available
   // otherwise it delegates resolution to _planAndResolve
@@ -670,9 +669,9 @@ class Container implements interfaces.Container {
     }
   }
 
-  private async _deactivateSingletonsAsync(bindings: Binding<unknown>[]): Promise<void> {
-    await Promise.all(bindings.map(b => this._deactivateIfSingleton(b)))
-  }
+  // private async _deactivateSingletonsAsync(bindings: Binding<unknown>[]): Promise<void> {
+  //   await Promise.all(bindings.map(b => this._deactivateIfSingleton(b)))
+  // }
 
   private _propagateContainerDeactivationThenBindingAndPreDestroy<T>(
     binding: Binding<T>,

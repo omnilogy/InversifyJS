@@ -7,6 +7,7 @@ import { isPromise } from '../utils/async';
 import { getFactoryDetails, ensureFullyBound } from '../utils/binding_utils';
 import { tryAndThrowErrorIfStackOverflow } from '../utils/exceptions';
 import { resolveInstance } from './instantiation';
+import type {Context} from "../planning/context";
 
 const _resolveRequest = <T>(requestScope: interfaces.RequestScope) =>
   (request: interfaces.Request): undefined | T | Promise<T> | (T | Promise<T>)[] => {
@@ -44,7 +45,7 @@ const _resolveRequest = <T>(requestScope: interfaces.RequestScope) =>
 
 const _resolveFactoryFromBinding = <T>(
   binding: interfaces.Binding<T>,
-  context: interfaces.Context
+  context: Context
 ): T | Promise<T> => {
   const factoryDetails = getFactoryDetails(binding);
   return tryAndThrowErrorIfStackOverflow(
