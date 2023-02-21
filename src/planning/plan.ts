@@ -1,4 +1,5 @@
 import type {Context} from "./context";
+import type {Request} from "./request";
 
 class Plan {
 

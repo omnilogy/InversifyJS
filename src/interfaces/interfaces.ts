@@ -1,7 +1,9 @@
 import { FactoryType } from '../utils/factory_type';
+import type {Context} from "../planning/context";
+import type {Request} from "../planning/request";
 
 namespace interfaces {
-  export type DynamicValue<T> = (context: interfaces.Context) => T | Promise<T>;
+  export type DynamicValue<T> = (context: Context) => T | Promise<T>;
   export type ContainerResolution<T> = T | Promise<T> | (T | Promise<T>)[];
 
   type AsyncCallback<TCallback> =
@@ -52,7 +54,7 @@ namespace interfaces {
     clone(): T;
   }
 
-  export type BindingActivation<T = unknown> = (context: interfaces.Context, injectable: T) => T | Promise<T>;
+  export type BindingActivation<T = unknown> = (context: Context, injectable: T) => T | Promise<T>;
 
   export type BindingDeactivation<T = unknown> = (injectable: T) => void | Promise<void>;
 
@@ -85,7 +87,7 @@ namespace interfaces {
 
   export type AutoFactory<T> = SimpleFactory<T, []>;
 
-  export type FactoryTypeFunction<T = unknown> = (context: interfaces.Context) => T | Promise<T>
+  export type FactoryTypeFunction<T = unknown> = (context: Context) => T | Promise<T>
 
   export interface FactoryDetails {
     factoryType: FactoryType,
@@ -110,16 +112,16 @@ namespace interfaces {
 
   export type Middleware = (next: Next) => Next;
 
-  export type ContextInterceptor = (context: interfaces.Context) => interfaces.Context;
+  export type ContextInterceptor = (context: Context) => Context;
 
-  export interface Context {
-    id: number;
-    container: Container;
-    plan: Plan;
-    currentRequest: Request;
-    addPlan(plan: Plan): void;
-    setCurrentRequest(request: Request): void;
-  }
+  // export interface Context {
+  //   id: number;
+  //   container: Container;
+  //   plan: Plan;
+  //   currentRequest: Request;
+  //   addPlan(plan: Plan): void;
+  //   setCurrentRequest(request: Request): void;
+  // }
 
   export type MetadataOrMetadataArray = Metadata | Metadata[];
 
@@ -142,26 +144,26 @@ namespace interfaces {
   }
 
   export type ResolveRequestHandler = (
-    request: interfaces.Request
+    request: Request
   ) => unknown;
 
   export type RequestScope = Map<unknown, unknown>;
 
-  export interface Request {
-    id: number;
-    serviceIdentifier: ServiceIdentifier;
-    parentContext: Context;
-    parentRequest: Request | null;
-    childRequests: Request[];
-    target: Target;
-    bindings: Binding<unknown>[];
-    requestScope: RequestScope | null;
-    addChildRequest(
-      serviceIdentifier: ServiceIdentifier,
-      bindings: (Binding<unknown> | Binding<unknown>[]),
-      target: Target
-    ): Request;
-  }
+  // export interface Request {
+  //   id: number;
+  //   serviceIdentifier: ServiceIdentifier;
+  //   parentContext: Context;
+  //   parentRequest: Request | null;
+  //   childRequests: Request[];
+  //   target: Target;
+  //   bindings: Binding<unknown>[];
+  //   requestScope: RequestScope | null;
+  //   addChildRequest(
+  //     serviceIdentifier: ServiceIdentifier,
+  //     bindings: (Binding<unknown> | Binding<unknown>[]),
+  //     target: Target
+  //   ): Request;
+  // }
 
   export interface Target {
     id: number;

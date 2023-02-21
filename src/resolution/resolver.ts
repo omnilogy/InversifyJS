@@ -7,10 +7,13 @@ import { isPromise } from '../utils/async';
 import { getFactoryDetails, ensureFullyBound } from '../utils/binding_utils';
 import { tryAndThrowErrorIfStackOverflow } from '../utils/exceptions';
 import { resolveInstance } from './instantiation';
+
 import type {Context} from "../planning/context";
+import type {Request} from "../planning/request";
+import type {Container} from "../container/container";
 
 const _resolveRequest = <T>(requestScope: interfaces.RequestScope) =>
-  (request: interfaces.Request): undefined | T | Promise<T> | (T | Promise<T>)[] => {
+  (request: Request): undefined | T | Promise<T> | (T | Promise<T>)[] => {
 
     request.parentContext.setCurrentRequest(request);
 
@@ -27,7 +30,7 @@ const _resolveRequest = <T>(requestScope: interfaces.RequestScope) =>
     if (targetIsAnArray && targetParentIsNotAnArray) {
 
       // Create an array instead of creating an instance
-      return childRequests.map((childRequest: interfaces.Request) => {
+      return childRequests.map((childRequest: Request) => {
         const _f = _resolveRequest(requestScope);
         return _f(childRequest) as T | Promise<T>;
       });
@@ -58,7 +61,7 @@ const _resolveFactoryFromBinding = <T>(
 
 const _getResolvedFromBinding = <T = unknown>(
   requestScope: interfaces.RequestScope,
-  request: interfaces.Request,
+  request: Request,
   binding: interfaces.Binding<T>,
 ): T | Promise<T> => {
   let result: T | Promise<T> | undefined;
@@ -105,7 +108,7 @@ const _resolveInScope = <T>(
 
 const _resolveBinding = <T>(
   requestScope: interfaces.RequestScope,
-  request: interfaces.Request,
+  request: Request,
   binding: interfaces.Binding<T>,
 ): T | Promise<T> => {
   return _resolveInScope<T>(requestScope, binding, () => {
@@ -119,12 +122,12 @@ const _resolveBinding = <T>(
   })
 }
 
-function _onActivation<T>(request: interfaces.Request, binding: interfaces.Binding<T>, resolved: T): T | Promise<T> {
+function _onActivation<T>(request: Request, binding: interfaces.Binding<T>, resolved: T): T | Promise<T> {
   let result = _bindingActivation(request.parentContext, binding, resolved);
 
   const containersIterator = _getContainersIterator(request.parentContext.container);
 
-  let container: interfaces.Container;
+  let container: Container;
   let containersIteratorResult = containersIterator.next();
 
   do {
@@ -147,7 +150,7 @@ function _onActivation<T>(request: interfaces.Request, binding: interfaces.Bindi
   return result;
 }
 
-const _bindingActivation = <T>(context: interfaces.Context, binding: interfaces.Binding<T>, previousResult: T): T | Promise<T> => {
+const _bindingActivation = <T>(context: Context, binding: interfaces.Binding<T>, previousResult: T): T | Promise<T> => {
   let result: T | Promise<T>;
 
   // use activation handler if available
@@ -162,7 +165,7 @@ const _bindingActivation = <T>(context: interfaces.Context, binding: interfaces.
 
 const _activateContainer = <T>(
   activationsIterator: Iterator<interfaces.BindingActivation<T>>,
-  context: interfaces.Context,
+  context: Context,
   result: T,
 ): T | Promise<T> => {
   let activation = activationsIterator.next();
@@ -182,7 +185,7 @@ const _activateContainer = <T>(
 
 const _activateContainerAsync = async<T>(
   activationsIterator: Iterator<interfaces.BindingActivation<T>>,
-  context: interfaces.Context,
+  context: Context,
   resultPromise: Promise<T>,
 ): Promise<T> => {
   let result = await resultPromise;
@@ -197,15 +200,15 @@ const _activateContainerAsync = async<T>(
   return result;
 }
 
-const _getContainerActivationsForService = <T>(container: interfaces.Container, serviceIdentifier: interfaces.ServiceIdentifier<T>) => {
+const _getContainerActivationsForService = <T>(container: Container, serviceIdentifier: interfaces.ServiceIdentifier<T>) => {
   // smell accessing _activations, but similar pattern is done in planner.getBindingDictionary()
   const activations = (container as unknown as { _activations: interfaces.Lookup<interfaces.BindingActivation<unknown>> })._activations;
 
   return activations.hasKey(serviceIdentifier) ? activations.get(serviceIdentifier).values() : [].values();
 }
 
-const _getContainersIterator = (container: interfaces.Container): Iterator<interfaces.Container> => {
-  const containersStack: interfaces.Container[] = [container];
+const _getContainersIterator = (container: Container): Iterator<Container> => {
+  const containersStack: Container[] = [container];
 
   let parent = container.parent;
 
@@ -215,7 +218,7 @@ const _getContainersIterator = (container: interfaces.Container): Iterator<inter
     parent = parent.parent;
   }
 
-  const getNextContainer: () => IteratorResult<interfaces.Container> = () => {
+  const getNextContainer: () => IteratorResult<Container> = () => {
     const nextContainer = containersStack.pop();
 
     if (nextContainer !== undefined) {
@@ -225,14 +228,14 @@ const _getContainersIterator = (container: interfaces.Container): Iterator<inter
     }
   };
 
-  const containersIterator: Iterator<interfaces.Container> = {
+  const containersIterator: Iterator<Container> = {
     next: getNextContainer,
   };
 
   return containersIterator;
 }
 
-function resolve<T>(context: interfaces.Context): T | Promise<T> | (T | Promise<T>)[] {
+function resolve<T>(context: Context): T | Promise<T> | (T | Promise<T>)[] {
   const _f = _resolveRequest<T>(context.plan.rootRequest.requestScope as interfaces.RequestScope);
   return _f(context.plan.rootRequest) as T | Promise<T> | (T | Promise<T>)[];
 }

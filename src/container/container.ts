@@ -11,7 +11,6 @@ import { isPromise, isPromiseOrContainsPromise } from '../utils/async';
 import { id } from '../utils/id';
 import { getServiceIdentifierAsString } from '../utils/serialization';
 import { Lookup } from './lookup';
-import { ModuleActivationStore } from './module_activation_store';
 
 type GetArgs<T> = Omit<interfaces.NextArgs<T>, 'contextInterceptor' | 'targetType'>
 
@@ -26,7 +25,7 @@ class Container {
   private _deactivations: interfaces.Lookup<interfaces.BindingDeactivation<unknown>>;
   // private _snapshots: interfaces.ContainerSnapshot[];
   private _metadataReader: interfaces.MetadataReader;
-  private _moduleActivationStore: interfaces.ModuleActivationStore
+  // private _moduleActivationStore: ModuleActivationStore;
 
   // public static merge(
   //   container1: interfaces.Container,
@@ -104,7 +103,7 @@ class Container {
     this._deactivations = new Lookup<interfaces.BindingDeactivation<unknown>>();
     this.parent = null;
     this._metadataReader = new MetadataReader();
-    this._moduleActivationStore = new ModuleActivationStore()
+    // this._moduleActivationStore = new ModuleActivationStore()
   }
 
   // public load(...modules: interfaces.ContainerModule[]) {

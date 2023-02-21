@@ -56,7 +56,7 @@ function listRegisteredBindingsForServiceIdentifier(
 }
 
 function alreadyDependencyChain(
-  request: interfaces.Request,
+  request: Request,
   serviceIdentifier: interfaces.ServiceIdentifier
 ): boolean {
   if (request.parentRequest === null) {
@@ -69,11 +69,11 @@ function alreadyDependencyChain(
 }
 
 function dependencyChainToString(
-  request: interfaces.Request
+  request: Request
 ) {
 
   function _createStringArr(
-    req: interfaces.Request,
+    req: Request,
     result: string[] = []
   ): string[] {
     const serviceIdentifier = getServiceIdentifierAsString(req.serviceIdentifier);

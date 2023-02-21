@@ -9,7 +9,7 @@ import { Target } from './target';
 
 function getDependencies(
   metadataReader: interfaces.MetadataReader, func: NewableFunction
-): interfaces.Target[] {
+): Target[] {
   const constructorName = getFunctionName(func);
   return getTargets(metadataReader, constructorName, func, false);
 }
@@ -19,7 +19,7 @@ function getTargets(
   constructorName: string,
   func: NewableFunction,
   isBaseClass: boolean
-): interfaces.Target[] {
+): Target[] {
 
   const metadata = metadataReader.getConstructorMetadata(func);
 
@@ -117,9 +117,9 @@ function getConstructorArgsAsTargets(
   serviceIdentifiers: interfaces.ServiceIdentifier[],
   constructorArgsMetadata: interfaces.MetadataMap,
   iterations: number
-): interfaces.Target[] {
+): Target[] {
 
-  const targets: interfaces.Target[] = [];
+  const targets: Target[] = [];
   for (let i = 0; i < iterations; i++) {
     const index = i;
     const target = getConstructorArgsAsTarget(
@@ -158,7 +158,7 @@ function getClassPropsAsTargets(
 ) {
 
   const classPropsMetadata = metadataReader.getPropertiesMetadata(constructorFunc);
-  let targets: interfaces.Target[] = [];
+  let targets: Target[] = [];
   const symbolKeys = Object.getOwnPropertySymbols(classPropsMetadata);
   const stringKeys: (string | symbol)[] = Object.keys(classPropsMetadata);
   const keys: (string | symbol)[] = stringKeys.concat(symbolKeys);

@@ -3,7 +3,7 @@ import { id } from '../utils/id';
 import type {Context} from "./context";
 import type {Target} from "./target";
 
-class Request {
+export class Request {
 
   public id: number;
   public serviceIdentifier: interfaces.ServiceIdentifier;
@@ -53,4 +53,3 @@ class Request {
   }
 }
 
-export { Request };

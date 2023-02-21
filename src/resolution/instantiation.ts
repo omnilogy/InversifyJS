@@ -5,10 +5,12 @@ import { interfaces } from '../interfaces/interfaces';
 import { Metadata } from '../planning/metadata';
 import { isPromise, isPromiseOrContainsPromise } from '../utils/async';
 
+import type { Request} from '../planning/request';
+
 interface InstanceCreationInstruction {
   constructorInjections: unknown[],
   propertyInjections: unknown[],
-  propertyRequests: interfaces.Request[]
+  propertyRequests: Request[]
 }
 
 interface ResolvedRequests extends InstanceCreationInstruction {
@@ -20,7 +22,7 @@ interface CreateInstanceWithInjectionArg<T> extends InstanceCreationInstruction 
 }
 
 function _resolveRequests(
-  childRequests: interfaces.Request[],
+  childRequests: Request[],
   resolveRequest: interfaces.ResolveRequestHandler
 ): ResolvedRequests {
   return childRequests.reduce<ResolvedRequests>((resolvedRequests, childRequest) => {
@@ -41,7 +43,7 @@ function _resolveRequests(
 
 function _createInstance<T>(
   constr: interfaces.Newable<T>,
-  childRequests: interfaces.Request[],
+  childRequests: Request[],
   resolveRequest: interfaces.ResolveRequestHandler,
 ): T | Promise<T> {
   let result: T | Promise<T>;
@@ -65,7 +67,7 @@ function createInstanceWithInjections<T>(
   args: CreateInstanceWithInjectionArg<T>
 ): T {
   const instance = new args.constr(...args.constructorInjections);
-  args.propertyRequests.forEach((r: interfaces.Request, index: number) => {
+  args.propertyRequests.forEach((r: Request, index: number) => {
     const property = r.target.identifier;
     const injection = args.propertyInjections[index];
     (instance as Record<string | symbol, unknown>)[property] = injection;
@@ -139,7 +141,7 @@ function _throwIfHandlingDeactivation<T = unknown>(binding: interfaces.Binding<T
 function resolveInstance<T>(
   binding: interfaces.Binding<T>,
   constr: interfaces.Newable<T>,
-  childRequests: interfaces.Request[],
+  childRequests: Request[],
   resolveRequest: interfaces.ResolveRequestHandler,
 ): T | Promise<T> {
   _validateInstanceResolution(binding, constr);

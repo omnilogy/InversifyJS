@@ -12,7 +12,7 @@ import { Request } from './request';
 import { Target } from './target';
 import type {Container} from "../container/container";
 import type {Binding} from "../bindings/binding";
-import {interfaces} from "../../lib/interfaces/interfaces";
+import {interfaces} from "../interfaces/interfaces";
 import type {Lookup} from "../container/lookup";
 
 function getBindingDictionary(cntnr: Container): Lookup<Binding<unknown>> {
@@ -161,7 +161,7 @@ function _createSubRequests(
 
   activeBindings.forEach((binding) => {
 
-    let subChildRequest: interfaces.Request | null = null;
+    let subChildRequest: Request | null = null;
 
     if (target.isArray()) {
       subChildRequest = childRequest.addChildRequest(binding.serviceIdentifier, binding, target);
@@ -188,7 +188,7 @@ function _createSubRequests(
         }
       }
 
-      dependencies.forEach((dependency: interfaces.Target) => {
+      dependencies.forEach((dependency: Target) => {
         _createSubRequests(metadataReader, false, dependency.serviceIdentifier, context, subChildRequest, dependency);
       });
 
