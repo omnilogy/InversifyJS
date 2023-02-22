@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Container, injectable, multiBindToService } from "../../src/inversify";
+import { Container, injectable, multiBindToService } from "../../src/nano-di";
 
 describe("Transitive bindings", () => {
 

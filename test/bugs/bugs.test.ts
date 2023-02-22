@@ -12,7 +12,7 @@ import {
   tagged,
   targetName,
   unmanaged
-} from '../../src/inversify';
+} from '../../src/nano-di';
 import { MetadataReader } from '../../src/planning/metadata_reader';
 import { getDependencies } from '../../src/planning/reflection_utils';
 import { getFunctionName, getServiceIdentifierAsString } from '../../src/utils/serialization';

@@ -49,13 +49,14 @@ and it doesn't manage their injection.
 The following code snippet showcases how to apply this decorator:
 
 ```ts
-import { Container, injectable, unmanaged } from "../src/inversify";
+import {Container, injectable, unmanaged} from "./nano-di";
 
 const BaseId = "Base";
 
 @injectable()
 class Base {
     public prop: string;
+
     public constructor(@unmanaged() arg: string) {
         this.prop = arg;
     }

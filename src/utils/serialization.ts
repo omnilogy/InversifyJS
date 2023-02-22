@@ -3,8 +3,9 @@ import { interfaces } from '../interfaces/interfaces';
 import type {Container} from "../container/container";
 
 import type { Request } from '../planning/request';
+import type {Target} from "../planning/target";
 
-function getServiceIdentifierAsString(serviceIdentifier: interfaces.ServiceIdentifier): string {
+export function getServiceIdentifierAsString(serviceIdentifier: interfaces.ServiceIdentifier): string {
   if (typeof serviceIdentifier === 'function') {
     const _serviceIdentifier = serviceIdentifier;
     return _serviceIdentifier.name;
@@ -16,7 +17,7 @@ function getServiceIdentifierAsString(serviceIdentifier: interfaces.ServiceIdent
   }
 }
 
-function listRegisteredBindingsForServiceIdentifier(
+export function listRegisteredBindingsForServiceIdentifier(
   container: Container,
   serviceIdentifier: string,
   getBindings: <T>(
@@ -89,7 +90,7 @@ function dependencyChainToString(
 
 }
 
-function circularDependencyToException(
+export function circularDependencyToException(
   request: Request
 ) {
   request.childRequests.forEach((childRequest) => {
@@ -102,7 +103,7 @@ function circularDependencyToException(
   });
 }
 
-function listMetadataForTarget(serviceIdentifierString: string, target: interfaces.Target): string {
+export function listMetadataForTarget(serviceIdentifierString: string, target: Target): string {
   if (target.isTagged() || target.isNamed()) {
 
     let m = '';
@@ -128,7 +129,7 @@ function listMetadataForTarget(serviceIdentifierString: string, target: interfac
 }
 
 
-function getFunctionName(func: { name: string | null }): string {
+export function getFunctionName(func: { name: string | null }): string {
   if (func.name) {
     return func.name;
   } else {
@@ -138,15 +139,7 @@ function getFunctionName(func: { name: string | null }): string {
   }
 }
 
-function getSymbolDescription(symbol: Symbol) {
+export function getSymbolDescription(symbol: Symbol) {
   return symbol.toString().slice(7, -1);
 }
 
-export {
-  getFunctionName,
-  getServiceIdentifierAsString,
-  listRegisteredBindingsForServiceIdentifier,
-  listMetadataForTarget,
-  circularDependencyToException,
-  getSymbolDescription
-};

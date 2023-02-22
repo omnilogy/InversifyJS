@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Container, inject, injectable, named } from "../../src/inversify";
+import { Container, inject, injectable, named } from "../../src/nano-di";
 import { performance } from 'perf_hooks';
 
 describe("inRequestScope", () => {

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import * as ERROR_MSGS from '../../src/constants/error_msgs';
-import { Container, injectable } from '../../src/inversify';
+import { Container, injectable } from '../../src/nano-di';
 
 describe('Error message when resolving fails', () => {
   interface Weapon { }

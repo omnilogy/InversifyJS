@@ -39,7 +39,7 @@ The project's folder architecture groups the components that are related with on
 │   │   └── tagged.ts
 │   ├── interfaces
 │   │   └── ...
-│   ├── inversify.ts
+│   ├── nano-di.ts
 │   ├── container
 │   │   ├── container.ts
 │   │   ├── key_value_pair.ts

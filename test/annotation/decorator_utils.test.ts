@@ -3,7 +3,7 @@ import * as sinon from 'sinon';
 
 import { createTaggedDecorator, tagParameter, tagProperty } from '../../src/annotation/decorator_utils'
 import * as ERROR_MSGS from '../../src/constants/error_msgs';
-import { Container, inject, injectable } from '../../src/inversify';
+import { Container, inject, injectable } from '../../src/nano-di';
 
 describe('createTaggedDecorator', () => {
   let sandbox: sinon.SinonSandbox

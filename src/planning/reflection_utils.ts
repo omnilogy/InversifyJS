@@ -1,13 +1,13 @@
 import { LazyServiceIdentifer } from '../annotation/lazy_service_identifier';
-import * as ERROR_MSGS from '../constants/error_msgs';
 import { TargetTypeEnum } from '../constants/literal_types';
 import * as METADATA_KEY from '../constants/metadata_keys';
 import { interfaces } from '../interfaces/interfaces';
 import { getFunctionName } from '../utils/serialization';
 import { Metadata } from './metadata';
 import { Target } from './target';
+import {MISSING_INJECT_ANNOTATION, MISSING_INJECTABLE_ANNOTATION} from "../constants/error_msgs";
 
-function getDependencies(
+export function getDependencies(
   metadataReader: interfaces.MetadataReader, func: NewableFunction
 ): Target[] {
   const constructorName = getFunctionName(func);
@@ -28,7 +28,7 @@ function getTargets(
 
   // All types resolved must be annotated with @injectable
   if (serviceIdentifiers === undefined) {
-    const msg = `${ERROR_MSGS.MISSING_INJECTABLE_ANNOTATION} ${constructorName}.`;
+    const msg = `${MISSING_INJECTABLE_ANNOTATION} ${constructorName}.`;
     throw new Error(msg);
   }
 
@@ -94,7 +94,7 @@ function getConstructorArgsAsTarget(
     const isUnknownType = isObject || isFunction || isUndefined;
 
     if (!isBaseClass && isUnknownType) {
-      const msg = `${ERROR_MSGS.MISSING_INJECT_ANNOTATION} argument ${index} in class ${constructorName}.`;
+      const msg = `${MISSING_INJECT_ANNOTATION} argument ${index} in class ${constructorName}.`;
       throw new Error(msg);
     }
 
@@ -145,7 +145,7 @@ function _getServiceIdentifierForProperty(
 ) {
   const serviceIdentifier = (inject || multiInject);
   if (serviceIdentifier === undefined) {
-    const msg = `${ERROR_MSGS.MISSING_INJECTABLE_ANNOTATION} for property ${String(propertyName)} in class ${className}.`;
+    const msg = `${MISSING_INJECTABLE_ANNOTATION} for property ${String(propertyName)} in class ${className}.`;
     throw new Error(msg);
   }
   return serviceIdentifier;
@@ -203,7 +203,7 @@ function getClassPropsAsTargets(
   return targets;
 }
 
-function getBaseClassDependencyCount(
+export function getBaseClassDependencyCount(
   metadataReader: interfaces.MetadataReader,
   func: NewableFunction
 ): number {
@@ -255,4 +255,4 @@ function formatTargetMetadata(targetMetadata: interfaces.Metadata[]) {
 
 }
 
-export { getDependencies, getBaseClassDependencyCount, getFunctionName };
+export {  getFunctionName };

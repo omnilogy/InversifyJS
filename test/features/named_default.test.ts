@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Container, inject, injectable, named } from "../../src/inversify";
+import { Container, inject, injectable, named } from "../../src/nano-di";
 
 describe("Named default", () => {
 

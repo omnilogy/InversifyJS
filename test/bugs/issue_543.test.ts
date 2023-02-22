@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import * as ERROR_MSGS from '../../src/constants/error_msgs';
-import { Container, inject, injectable } from '../../src/inversify';
+import { Container, inject, injectable } from '../../src/nano-di';
 
 describe('Issue 543', () => {
 

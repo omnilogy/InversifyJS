@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { ModuleActivationStore } from '../../src/container/module_activation_store'
-import { interfaces } from '../../src/inversify'
+import { interfaces } from '../../src/nano-di'
 
 describe('ModuleActivationStore', () => {
   it('should remove handlers added by the module', () => {

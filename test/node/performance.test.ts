@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Container } from '../../src/inversify';
+import { Container } from '../../src/nano-di';
 import { performance } from 'perf_hooks';
 
 describe('Performance', () => {

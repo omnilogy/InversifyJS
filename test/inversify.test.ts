@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import * as ERROR_MSGS from '../src/constants/error_msgs';
 import { interfaces } from '../src/interfaces/interfaces';
-import { Container, ContainerModule, decorate, inject, injectable, LazyServiceIdentifer, multiInject, named, tagged, targetName, typeConstraint, unmanaged } from '../src/inversify';
+import { Container, ContainerModule, decorate, inject, injectable, LazyServiceIdentifer, multiInject, named, tagged, targetName, typeConstraint, unmanaged } from '../src/nano-di';
 
 describe('InversifyJS', () => {
 

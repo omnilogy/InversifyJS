@@ -1,7 +1,8 @@
-import { getServiceIdentifierAsString, interfaces } from '../inversify';
+import { getServiceIdentifierAsString } from '../nano-di';
 import * as ERROR_MSGS from '../constants/error_msgs';
 import { BindingTypeEnum } from '../constants/literal_types';
 import { FactoryType } from './factory_type';
+import type { interfaces } from "../interfaces/interfaces";
 
 export const multiBindToService = (container: interfaces.Container) =>
   (service: interfaces.ServiceIdentifier) =>

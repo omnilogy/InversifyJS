@@ -1,6 +1,5 @@
 import { BindingCount } from '../bindings/binding_count';
-import * as ERROR_MSGS from '../constants/error_msgs';
-import { BindingTypeEnum, TargetTypeEnum } from '../constants/literal_types';
+import { BindingTypeEnum } from '../constants/literal_types';
 import * as METADATA_KEY from '../constants/metadata_keys';
 import { isStackOverflowExeption } from '../utils/exceptions';
 import { circularDependencyToException, getServiceIdentifierAsString, listMetadataForTarget, listRegisteredBindingsForServiceIdentifier } from '../utils/serialization';
@@ -14,6 +13,7 @@ import type {Container} from "../container/container";
 import type {Binding} from "../bindings/binding";
 import {interfaces} from "../interfaces/interfaces";
 import type {Lookup} from "../container/lookup";
+import {AMBIGUOUS_MATCH, ARGUMENTS_LENGTH_MISMATCH, NOT_REGISTERED} from "../constants/error_msgs";
 
 function getBindingDictionary(cntnr: Container): Lookup<Binding<unknown>> {
   return (cntnr as unknown as { _bindingDictionary: Lookup<Binding<unknown>> })._bindingDictionary;
@@ -94,7 +94,7 @@ function _getActiveBindings(
 function _validateActiveBindingCount(
   serviceIdentifier: interfaces.ServiceIdentifier,
   bindings: interfaces.Binding<unknown>[],
-  target: interfaces.Target,
+  target: Target,
   container: Container
 ): interfaces.Binding<unknown>[] {
 
@@ -105,7 +105,7 @@ function _validateActiveBindingCount(
         return bindings;
       } else {
         const serviceIdentifierString = getServiceIdentifierAsString(serviceIdentifier);
-        let msg = ERROR_MSGS.NOT_REGISTERED;
+        let msg = NOT_REGISTERED;
         msg += listMetadataForTarget(serviceIdentifierString, target);
         msg += listRegisteredBindingsForServiceIdentifier(container, serviceIdentifierString, getBindings);
         throw new Error(msg);
@@ -117,7 +117,7 @@ function _validateActiveBindingCount(
     default:
       if (!target.isArray()) {
         const serviceIdentifierString = getServiceIdentifierAsString(serviceIdentifier);
-        let msg = `${ERROR_MSGS.AMBIGUOUS_MATCH} ${serviceIdentifierString}`;
+        let msg = `${AMBIGUOUS_MATCH} ${serviceIdentifierString}`;
         msg += listRegisteredBindingsForServiceIdentifier(container, serviceIdentifierString, getBindings);
         throw new Error(msg);
       } else {
@@ -183,7 +183,7 @@ function _createSubRequests(
         const baseClassDependencyCount = getBaseClassDependencyCount(metadataReader, binding.implementationType as NewableFunction);
 
         if (dependencies.length < baseClassDependencyCount) {
-          const error = ERROR_MSGS.ARGUMENTS_LENGTH_MISMATCH(getFunctionName(binding.implementationType as NewableFunction));
+          const error = ARGUMENTS_LENGTH_MISMATCH(getFunctionName(binding.implementationType as NewableFunction));
           throw new Error(error);
         }
       }
@@ -248,18 +248,18 @@ function plan(
 
 }
 
-function createMockRequest(
-  container: Container,
-  serviceIdentifier: interfaces.ServiceIdentifier,
-  key: string | number | symbol,
-  value: unknown
-): Request {
+// export function createMockRequest(
+//   container: Container,
+//   serviceIdentifier: interfaces.ServiceIdentifier,
+//   key: string | number | symbol,
+//   value: unknown
+// ): Request {
+//
+//   const target = new Target(TargetTypeEnum.Variable, '', serviceIdentifier, new Metadata(key, value));
+//   const context = new Context(container);
+//   const request = new Request(serviceIdentifier, context, null, [], target);
+//
+//   return request;
+// }
 
-  const target = new Target(TargetTypeEnum.Variable, '', serviceIdentifier, new Metadata(key, value));
-  const context = new Context(container);
-  const request = new Request(serviceIdentifier, context, null, [], target);
-
-  return request;
-}
-
-export { plan, createMockRequest, getBindingDictionary };
+export { plan, getBindingDictionary };

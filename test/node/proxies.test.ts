@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { interfaces } from '../../src/interfaces/interfaces';
-import { Container, inject, injectable } from '../../src/inversify';
+import { Container, inject, injectable } from '../../src/nano-di';
 
 describe('InversifyJS', () => {
 

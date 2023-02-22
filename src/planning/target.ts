@@ -1,16 +1,15 @@
 import * as METADATA_KEY from '../constants/metadata_keys';
 import { interfaces } from '../interfaces/interfaces';
 import { id } from '../utils/id';
-import { getSymbolDescription } from '../utils/serialization';
 import { Metadata } from './metadata';
 import { QueryableString } from './queryable_string';
 
-class Target implements interfaces.Target {
+class Target {
 
   public id: number;
   public type: interfaces.TargetType;
   public serviceIdentifier: interfaces.ServiceIdentifier;
-  public name: interfaces.QueryableString;
+  public name: QueryableString;
   public identifier: string | symbol;
   public key!: string | symbol
   public metadata!: Metadata[];
@@ -25,8 +24,7 @@ class Target implements interfaces.Target {
     this.id = id();
     this.type = type;
     this.serviceIdentifier = serviceIdentifier;
-    const queryableName = typeof identifier === 'symbol' ? getSymbolDescription(identifier) : identifier;
-    this.name = new QueryableString(queryableName || '');
+    this.name = new QueryableString();
     this.identifier = identifier;
     this.metadata = new Array();
 
@@ -101,7 +99,7 @@ class Target implements interfaces.Target {
     return this.matchesTag(METADATA_KEY.NAMED_TAG)(name);
   }
 
-  public matchesTag(key: string) {
+  public matchesTag(key: string | number | symbol) {
     return (value: unknown) => {
       for (const m of this.metadata) {
         if (m.key === key && m.value === value) {

@@ -4,7 +4,7 @@ import {
   Container, inject, injectable,
   multiInject, named, optional,
   tagged, unmanaged
-} from "../../src/inversify";
+} from "../../src/nano-di";
 
 describe("Property Injection", () => {
 

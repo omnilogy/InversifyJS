@@ -13,7 +13,7 @@ import { LazyServiceIdentifer, ServiceIdentifierOrFunc } from '../../src/annotat
 import * as ERROR_MSGS from '../../src/constants/error_msgs';
 import * as METADATA_KEY from '../../src/constants/metadata_keys';
 import { interfaces } from '../../src/interfaces/interfaces';
-import { multiInject } from '../../src/inversify';
+import { multiInject } from '../../src/nano-di';
 
 interface Katana { }
 interface Shuriken { }

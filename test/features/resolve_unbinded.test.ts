@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Container, injectable, interfaces } from "../../src/inversify";
+import { Container, injectable, interfaces } from "../../src/nano-di";
 
 describe("Container.prototype.resolve", () => {
 

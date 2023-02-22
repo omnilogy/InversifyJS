@@ -1,4 +1,4 @@
-import { inject, injectable, named, tagged } from '../../src/inversify';
+import { inject, injectable, named, tagged } from '../../src/nano-di';
 
 export interface FooInterface {
   name: string;

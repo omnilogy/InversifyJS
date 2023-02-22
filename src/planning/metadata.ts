@@ -1,5 +1,5 @@
-import * as METADATA_KEY from '../constants/metadata_keys';
 import { interfaces } from '../interfaces/interfaces';
+import {NAMED_TAG} from "../constants/metadata_keys";
 
 
 class Metadata implements interfaces.Metadata {
@@ -16,7 +16,7 @@ class Metadata implements interfaces.Metadata {
   }
 
   public toString() {
-    if (this.key === METADATA_KEY.NAMED_TAG) {
+    if (this.key === NAMED_TAG) {
       return `named: ${String(this.value).toString()} `;
     } else {
       return `tagged: { key:${this.key.toString()}, value: ${String(this.value)} }`;

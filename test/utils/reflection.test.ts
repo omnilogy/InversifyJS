@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { injectable, inject, LazyServiceIdentifer, Container } from '../../src/inversify';
+import { injectable, inject, LazyServiceIdentifer, Container } from '../../src/nano-di';
 import { getDependencies } from '../../src/planning/reflection_utils';
 import { MetadataReader } from "../../src/planning/metadata_reader";
 import sinon from "sinon";

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import * as METADATA_KEY from "../../src/constants/metadata_keys";
 import { interfaces } from "../../src/interfaces/interfaces";
-import { Container, inject, injectable, MetadataReader } from "../../src/inversify";
+import { Container, inject, injectable, MetadataReader } from "../../src/nano-di";
 import { Metadata } from "../../src/planning/metadata";
 
 describe("Custom Metadata Reader", () => {

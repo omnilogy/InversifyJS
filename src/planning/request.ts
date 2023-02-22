@@ -11,7 +11,7 @@ export class Request {
   public parentRequest: Request | null;
   public bindings: interfaces.Binding<unknown>[];
   public childRequests: Request[];
-  public target: interfaces.Target;
+  public target: Target;
   public requestScope: interfaces.RequestScope | null;
 
   public constructor(
@@ -19,7 +19,7 @@ export class Request {
     parentContext: Context,
     parentRequest: Request | null,
     bindings: (interfaces.Binding<any> | interfaces.Binding<any>[]),
-    target: interfaces.Target
+    target: Target
   ) {
     this.id = id();
     this.serviceIdentifier = serviceIdentifier;

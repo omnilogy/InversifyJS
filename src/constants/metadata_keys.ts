@@ -17,13 +17,13 @@ export const INJECT_TAG = 'inject';
 export const MULTI_INJECT_TAG = 'multi_inject';
 
 // used to store constructor arguments tags
-export const TAGGED = 'inversify:tagged';
+export const TAGGED = 'nano-di:tagged';
 
 // used to store class properties tags
-export const TAGGED_PROP = 'inversify:tagged_props';
+export const TAGGED_PROP = 'nano-di:tagged_props';
 
 // used to store types to be injected
-export const PARAM_TYPES = 'inversify:paramtypes';
+export const PARAM_TYPES = 'nano-di:paramtypes';
 
 // used to access design time types
 export const DESIGN_PARAM_TYPES = 'design:paramtypes';

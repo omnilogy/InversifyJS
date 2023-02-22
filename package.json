@@ -1,7 +1,7 @@
 {
   "author": "Remo H. Jansen",
   "bugs": {
-    "url": "https://github.com/inversify/InversifyJS/issues"
+    "url": "https://github.com/nano-di/InversifyJS/issues"
   },
   "description": "A powerful and lightweight inversion of control container for JavaScript and Node.js apps powered by TypeScript.",
   "devDependencies": {
@@ -34,8 +34,8 @@
     "updates": "12.2.2"
   },
   "engines": {},
-  "homepage": "http://inversify.io",
-  "jsnext:main": "es/inversify.js",
+  "homepage": "http://nano-di.io",
+  "jsnext:main": "es/nano-di.js",
   "keywords": [
     "dependency injection",
     "dependency inversion",
@@ -47,12 +47,12 @@
     "typescript"
   ],
   "license": "MIT",
-  "main": "lib/inversify.js",
-  "module": "es/inversify.js",
-  "name": "inversify",
+  "main": "src/nano-di.js",
+  "module": "es/nano-di.js",
+  "name": "nano-di",
   "repository": {
     "type": "git",
-    "url": "https://github.com/inversify/InversifyJS.git"
+    "url": "https://github.com/nano-di/InversifyJS.git"
   },
   "scripts": {
     "build": "npm run build:lib && npm run build:amd && npm run build:es && npm run build:es6",
@@ -66,10 +66,10 @@
     "pretest": "tslint --project .",
     "publish-please": "publish-please",
     "test": "nyc --reporter=lcov --require ts-node/register mocha test/**/*.test.ts --reporter spec --retries 3 --require 'node_modules/reflect-metadata/Reflect.js' --exit",
-    "test:browser": "browserify ./test/inversify.test.ts -p [ tsify --noImplicitAny ] > ./test/bundle.test.js && karma start",
+    "test:browser": "browserify ./test/nano-di.test.ts -p [ tsify --noImplicitAny ] > ./test/bundle.test.js && karma start",
     "update": "updates --update --minor && npm install"
   },
   "sideEffects": false,
-  "types": "lib/inversify.d.ts",
+  "types": "lib/nano-di.d.ts",
   "version": "6.0.1"
 }

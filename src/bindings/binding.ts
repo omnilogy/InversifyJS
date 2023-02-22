@@ -2,6 +2,8 @@ import { BindingScopeEnum, BindingTypeEnum } from '../constants/literal_types';
 import { interfaces } from '../interfaces/interfaces';
 import { id } from '../utils/id';
 
+import type { Request } from "../planning/request";
+
 class Binding<TActivated> implements interfaces.Binding<TActivated> {
 
   public id: number;
@@ -51,7 +53,7 @@ class Binding<TActivated> implements interfaces.Binding<TActivated> {
     this.serviceIdentifier = serviceIdentifier;
     this.scope = scope;
     this.type = BindingTypeEnum.Invalid;
-    this.constraint = (request: interfaces.Request | null) => true;
+    this.constraint = (request: Request | null) => true;
     this.implementationType = null;
     this.cache = null;
     this.factory = null;

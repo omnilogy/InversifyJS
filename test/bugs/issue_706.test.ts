@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { BindingScopeEnum, Container, injectable } from '../../src/inversify';
+import { BindingScopeEnum, Container, injectable } from '../../src/nano-di';
 
 describe('Issue 706', () => {
 

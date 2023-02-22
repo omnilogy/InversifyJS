@@ -165,24 +165,24 @@ namespace interfaces {
   //   ): Request;
   // }
 
-  export interface Target {
-    id: number;
-    serviceIdentifier: ServiceIdentifier;
-    type: TargetType;
-    name: QueryableString;
-    identifier: string | symbol;
-    metadata: Metadata[];
-    getNamedTag(): interfaces.Metadata<string> | null;
-    getCustomTags(): interfaces.Metadata[] | null;
-    hasTag(key: string | number | symbol): boolean;
-    isArray(): boolean;
-    matchesArray(name: interfaces.ServiceIdentifier): boolean;
-    isNamed(): boolean;
-    isTagged(): boolean;
-    isOptional(): boolean;
-    matchesNamedTag(name: string): boolean;
-    matchesTag(key: string | number | symbol): (value: unknown) => boolean;
-  }
+  // export interface Target {
+  //   id: number;
+  //   serviceIdentifier: ServiceIdentifier;
+  //   type: TargetType;
+  //   name: QueryableString;
+  //   identifier: string | symbol;
+  //   metadata: Metadata[];
+  //   getNamedTag(): interfaces.Metadata<string> | null;
+  //   getCustomTags(): interfaces.Metadata[] | null;
+  //   hasTag(key: string | number | symbol): boolean;
+  //   isArray(): boolean;
+  //   matchesArray(name: interfaces.ServiceIdentifier): boolean;
+  //   isNamed(): boolean;
+  //   isTagged(): boolean;
+  //   isOptional(): boolean;
+  //   matchesNamedTag(name: string): boolean;
+  //   matchesTag(key: string | number | symbol): (value: unknown) => boolean;
+  // }
 
   export interface ContainerOptions {
     autoBindInjectable?: boolean;
