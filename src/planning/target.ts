@@ -26,7 +26,7 @@ class Target {
     this.serviceIdentifier = serviceIdentifier;
     this.name = new QueryableString();
     this.identifier = identifier;
-    this.metadata = new Array();
+    this.metadata = [];
 
     let metadataItem: interfaces.Metadata | null = null;
 

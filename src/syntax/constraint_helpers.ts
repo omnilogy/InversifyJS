@@ -12,9 +12,8 @@ const traverseAncerstors = (
   const parent = request.parentRequest;
   if (parent !== null) {
     return constraint(parent) ? true : traverseAncerstors(parent, constraint);
-  } else {
-    return false;
   }
+  return false;
 };
 
 // This helpers use currying to help you to generate constraints

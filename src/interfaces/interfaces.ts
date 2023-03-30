@@ -51,7 +51,7 @@ namespace interfaces {
   export type ServiceIdentifier<T = unknown> = (string | symbol | Newable<T> | Abstract<T>);
 
   export interface Clonable<T> {
-    clone(): T;
+    // clone(): T;
   }
 
   export type BindingActivation<T = unknown> = (context: Context, injectable: T) => T | Promise<T>;

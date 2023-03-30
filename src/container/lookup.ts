@@ -1,6 +1,5 @@
 import * as ERROR_MSGS from '../constants/error_msgs';
 import { interfaces } from '../interfaces/interfaces';
-import { isClonable } from '../utils/clonable';
 
 class Lookup<T> {
 
@@ -10,10 +9,10 @@ class Lookup<T> {
   public constructor() {
     this._map = new Map<interfaces.ServiceIdentifier, T[]>();
   }
-
-  public getMap() {
-    return this._map;
-  }
+  //
+  // public getMap() {
+  //   return this._map;
+  // }
 
   // adds a new entry to _map
   public add(serviceIdentifier: interfaces.ServiceIdentifier, value: T): void {
@@ -111,16 +110,16 @@ class Lookup<T> {
 
   // returns a new Lookup instance; note: this is not a deep clone, only Lookup related data structure (dictionary) is
   // cloned, content remains the same
-  public clone() {
-
-    const copy = new Lookup<T>();
-
-    this._map.forEach((value, key) => {
-      value.forEach((b) => copy.add(key, isClonable<T>(b) ? b.clone() : b));
-    });
-
-    return copy;
-  }
+  // public clone() {
+  //
+  //   const copy = new Lookup<T>();
+  //
+  //   this._map.forEach((value, key) => {
+  //     value.forEach((b) => copy.add(key, isClonable<T>(b) ? b.clone() : b));
+  //   });
+  //
+  //   return copy;
+  // }
 
   public traverse(func: (key: interfaces.ServiceIdentifier, value: T[]) => void): void {
     this._map.forEach((value, key) => {

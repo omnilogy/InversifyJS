@@ -1,10 +1,10 @@
-import { BindingScopeEnum, BindingTypeEnum } from '../constants/literal_types';
+import {  BindingTypeEnum } from '../constants/literal_types';
 import { interfaces } from '../interfaces/interfaces';
 import { id } from '../utils/id';
 
 import type { Request } from "../planning/request";
 
-class Binding<TActivated> implements interfaces.Binding<TActivated> {
+class Binding<TActivated> {
 
   public id: number;
   public moduleId!: interfaces.ContainerModuleBase['id'];
@@ -62,22 +62,22 @@ class Binding<TActivated> implements interfaces.Binding<TActivated> {
     this.onDeactivation = null;
     this.dynamicValue = null;
   }
-
-  public clone(): interfaces.Binding<TActivated> {
-    const clone = new Binding(this.serviceIdentifier, this.scope);
-    clone.activated = (clone.scope === BindingScopeEnum.Singleton) ? this.activated : false;
-    clone.implementationType = this.implementationType;
-    clone.dynamicValue = this.dynamicValue;
-    clone.scope = this.scope;
-    clone.type = this.type;
-    clone.factory = this.factory;
-    clone.provider = this.provider;
-    clone.constraint = this.constraint;
-    clone.onActivation = this.onActivation;
-    clone.onDeactivation = this.onDeactivation;
-    clone.cache = this.cache;
-    return clone;
-  }
+  //
+  // public clone(): interfaces.Binding<TActivated> {
+  //   const clone = new Binding(this.serviceIdentifier, this.scope);
+  //   clone.activated = (clone.scope === BindingScopeEnum.Singleton) ? this.activated : false;
+  //   clone.implementationType = this.implementationType;
+  //   clone.dynamicValue = this.dynamicValue;
+  //   clone.scope = this.scope;
+  //   clone.type = this.type;
+  //   clone.factory = this.factory;
+  //   clone.provider = this.provider;
+  //   clone.constraint = this.constraint;
+  //   clone.onActivation = this.onActivation;
+  //   clone.onDeactivation = this.onDeactivation;
+  //   clone.cache = this.cache;
+  //   return clone;
+  // }
 
 }
 

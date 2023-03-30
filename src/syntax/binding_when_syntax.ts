@@ -39,31 +39,31 @@ class BindingWhenSyntax<T>  {
     return new BindingOnSyntax<T>();
   }
 
-  public whenTargetTagged(tag: string | number | symbol, value: unknown) {
-    this._binding.constraint = taggedConstraint(tag)(value);
-    return new BindingOnSyntax<T>();
-  }
+  // public whenTargetTagged(tag: string | number | symbol, value: unknown) {
+  //   this._binding.constraint = taggedConstraint(tag)(value);
+  //   return new BindingOnSyntax<T>();
+  // }
 
-  public whenInjectedInto(parent: (NewableFunction | string)) {
-    this._binding.constraint = (request: Request | null) =>
-      request !== null && typeConstraint(parent)(request.parentRequest);
+  // public whenInjectedInto(parent: (NewableFunction | string)) {
+  //   this._binding.constraint = (request: Request | null) =>
+  //     request !== null && typeConstraint(parent)(request.parentRequest);
+  //
+  //   return new BindingOnSyntax<T>();
+  // }
 
-    return new BindingOnSyntax<T>();
-  }
-
-  public whenParentNamed(name: string | number | symbol) {
-    this._binding.constraint = (request: Request | null) =>
-      request !== null && namedConstraint(name)(request.parentRequest);
-
-    return new BindingOnSyntax<T>();
-  }
-
-  public whenParentTagged(tag: string | number | symbol, value: unknown) {
-    this._binding.constraint = (request: Request | null) =>
-      request !== null && taggedConstraint(tag)(value)(request.parentRequest);
-
-    return new BindingOnSyntax<T>();
-  }
+  // public whenParentNamed(name: string | number | symbol) {
+  //   this._binding.constraint = (request: Request | null) =>
+  //     request !== null && namedConstraint(name)(request.parentRequest);
+  //
+  //   return new BindingOnSyntax<T>();
+  // }
+  //
+  // public whenParentTagged(tag: string | number | symbol, value: unknown) {
+  //   this._binding.constraint = (request: Request | null) =>
+  //     request !== null && taggedConstraint(tag)(value)(request.parentRequest);
+  //
+  //   return new BindingOnSyntax<T>();
+  // }
 
   public whenAnyAncestorIs(ancestor: (NewableFunction | string)) {
     this._binding.constraint = (request: Request | null) =>
